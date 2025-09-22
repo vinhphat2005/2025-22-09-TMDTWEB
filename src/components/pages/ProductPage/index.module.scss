@@ -1,0 +1,838 @@
+// under 1024px width
+.container_s {
+  margin: 0 auto;
+  position: relative;
+  padding-top: 10rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;
+
+  .slider_container {
+    top: calc(10rem - 2.95rem);
+    position: sticky;
+    margin-bottom: 3rem;
+
+    .slider_wrapper {
+      overflow: hidden;
+
+      .image_container {
+        border-radius: 2rem;
+
+        .image_fill {
+          padding-top: 141.4400805639%;
+        }
+      }
+    }
+  }
+
+  .grid_footer {
+    border-top-left-radius: 3rem;
+    border-top-right-radius: 3rem;
+    border-top: $border-modal;
+    z-index: 3;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    padding: 3rem 2rem;
+
+    @media (min-width: 600px) {
+      padding: 3rem 4rem;
+    }
+
+    .details_wrapper {
+      padding-bottom: 2.5rem;
+      width: 100%;
+      line-height: 1.5;
+      display: flex;
+
+      .name_wrapper {
+        .name {
+          font-family: $font-f-hero;
+          text-transform: uppercase;
+          letter-spacing: $ls-primary;
+          font-size: 2.4rem;
+          line-height: normal;
+        }
+      }
+
+      .description {
+        font-size: 1.2rem;
+        font-family: $font-f-secondary;
+        font-weight: $font-w-700;
+        letter-spacing: $ls-secondary;
+        text-transform: capitalize;
+        color: $c-var;
+      }
+
+      .color {
+        font-size: 1.4rem;
+        font-family: $font-f-secondary;
+        font-weight: $font-w-700;
+        letter-spacing: $ls-secondary;
+        text-transform: capitalize;
+      }
+
+      .price_wrapper {
+        display: flex;
+        flex-direction: column;
+        margin-left: auto;
+        font-family: $font-f-secondary;
+        font-weight: $font-w-900;
+        letter-spacing: $ls-secondary;
+
+        .discounted_price {
+          color: $c-discount;
+        }
+
+        .crossed_price {
+          text-decoration: line-through;
+          font-size: 1rem;
+          text-align: right;
+        }
+      }
+    }
+
+    .controls_wrapper {
+      padding: 2rem 0 3rem;
+      display: flex;
+      flex-direction: column;
+      border-top: $border-modal;
+      gap: 2rem;
+
+      @media (min-width: 600px) {
+        padding: 2rem 0;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 1fr;
+      }
+
+      .variants_container {
+        .number_of_colors {
+          font-size: 1.4rem;
+          font-family: $font-f-secondary;
+          font-weight: $font-w-700;
+          letter-spacing: $ls-secondary;
+          text-transform: capitalize;
+          margin-bottom: 1rem;
+
+          span {
+            font-size: 1.2rem;
+            font-family: $font-f-secondary;
+            font-weight: $font-w-700;
+            letter-spacing: $ls-secondary;
+            text-transform: capitalize;
+            color: $c-var;
+          }
+        }
+
+        .variants_wrapper {
+          width: 100%;
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          align-items: center;
+          justify-content: center;
+          gap: 1rem;
+          padding: 1rem;
+          border: 0.2rem solid #9e9e9e;
+          border-radius: 1rem;
+        }
+      }
+
+      .sizes_container {
+        height: 100%;
+
+        .pick_size {
+          font-size: 1.4rem;
+          font-family: $font-f-secondary;
+          font-weight: $font-w-700;
+          letter-spacing: $ls-secondary;
+          text-transform: capitalize;
+          margin-bottom: 1rem;
+        }
+
+        .sizes_wrapper {
+          width: 100%;
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 1rem;
+        }
+      }
+    }
+
+    .button_wrapper {
+      border-top: $border-modal;
+      padding-top: 3rem;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+
+      .button {
+        border: 0.2rem solid $c-var;
+        color: #fff;
+        background: $back-c-button-primary;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          cursor: pointer;
+          background-color: $back-c-button-hover;
+          border: 0.2rem solid $c-primary;
+        }
+
+        &:active {
+          transform: scale(0.9);
+        }
+      }
+
+      .button_disabled {
+        padding: 2rem;
+        color: #3d3d3d;
+        border: 0.2rem solid #9e9e9e;
+
+        &:hover {
+          cursor: auto;
+        }
+      }
+
+      .button,
+      .button_disabled {
+        border-radius: 1rem;
+        width: 100%;
+        width: 100%;
+        font-size: 1.2rem;
+        text-align: center;
+        padding: 2rem 1rem;
+
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        -moz-transition: all 0.2s ease-in;
+        -o-transition: all 0.2s ease-in;
+        -webkit-transition: all 0.2s ease-in;
+        transition: all 0.2s ease-in;
+
+        @media (min-width: 600px) {
+          width: 50%;
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+// from 1024px width
+.container_b {
+  width: 100%;
+  padding-top: 10rem;
+  padding-bottom: 3rem;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: flex-start;
+  display: grid;
+  gap: 3rem;
+
+  @media (min-width: 1300px) {
+    gap: 5rem;
+  }
+
+  .details_wrapper,
+  .controls_wrapper {
+    top: 10rem;
+    position: sticky;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    // min-height: calc(100vh - 7.45rem + 2.65rem);
+    // min-height: calc(100vh - 7.45rem);
+    min-height: calc(100vh - 12.2rem + 2.65rem);
+    // min-height: calc(100vh - 12.2rem);
+  }
+
+  .details_wrapper {
+    line-height: 1.5;
+
+    .name {
+      font-family: $font-f-hero;
+      text-transform: uppercase;
+      letter-spacing: $ls-primary;
+      font-size: 2.4rem;
+      line-height: normal;
+    }
+
+    .description {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+
+    .description1 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description2 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description3 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description4 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description5 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description6 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description7 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description8 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description9 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description10 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description11 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description12 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description13 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description14 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description15 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description16 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description17 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description18 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description19 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+    .description20 {
+      font-size: 1.2rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+      color: $c-var;
+    }
+
+
+
+    .color {
+      font-size: 1.4rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-700;
+      letter-spacing: $ls-secondary;
+      text-transform: capitalize;
+    }
+
+    .price_wrapper {
+      margin-top: 1.5rem;
+      font-family: $font-f-secondary;
+      font-weight: $font-w-900;
+      letter-spacing: $ls-secondary;
+
+      .discounted_price {
+        color: $c-discount;
+      }
+
+      .crossed_price {
+        text-decoration: line-through;
+        margin-left: 0.5rem;
+      }
+    }
+  }
+
+  .controls_wrapper {
+    .variants_container {
+      .number_of_colors {
+        font-size: 1.4rem;
+        font-family: $font-f-secondary;
+        font-weight: $font-w-700;
+        letter-spacing: $ls-secondary;
+        text-transform: capitalize;
+        margin-bottom: 1rem;
+
+        span {
+          font-size: 1.2rem;
+          font-family: $font-f-secondary;
+          font-weight: $font-w-700;
+          letter-spacing: $ls-secondary;
+          text-transform: capitalize;
+          color: $c-var;
+        }
+      }
+
+      .variants_wrapper {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 5rem;
+        padding: 1rem;
+        border: 0.2rem solid #9e9e9e;
+        border-radius: 1rem;
+      }
+    }
+
+    .sizes_container {
+      .pick_size {
+        font-size: 1.4rem;
+        font-family: $font-f-secondary;
+        font-weight: $font-w-700;
+        letter-spacing: $ls-secondary;
+        text-transform: capitalize;
+        margin-bottom: 1rem;
+      }
+
+      .sizes_wrapper {
+        width: 100%;
+        // display: grid;
+        // grid-template-columns: repeat(5, 1fr);
+        gap: 1rem;
+        display: flex;
+        margin-bottom: 2rem;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .button {
+      color: #fff;
+      border: 0.2rem solid $c-var;
+      background: $back-c-button-primary;
+
+      &:hover {
+        cursor: pointer;
+        background-color: $back-c-button-hover;
+        border: 0.2rem solid $c-primary;
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+    }
+
+    .button_disabled {
+      color: #3d3d3d;
+      border: 0.2rem solid #9e9e9e;
+
+      &:hover {
+        cursor: auto;
+      }
+    }
+
+    .button,
+    .button_disabled {
+      border-radius: 1rem;
+      width: 100%;
+      padding: 2rem 1rem;
+      text-align: center;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+
+      -moz-transition: all 0.1s ease-in;
+      -o-transition: all 0.1s ease-in;
+      -webkit-transition: all 0.1s ease-in;
+      transition: all 0.1s ease-in;
+    }
+  }
+
+  .images {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .image_container {
+      border-radius: 2.5rem;
+
+      .image_fill {
+        padding-top: 141.42017391%;
+      }
+    }
+  }
+}
+
+.loader_section {
+  min-height: 100vh;
+}
+
+.button_content_show {
+  opacity: 1;
+}
+
+.button_content_no_show {
+  opacity: 0;
+}
+
+.button_loader {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #fff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  animation: rotation 1s linear infinite;
+  position: absolute;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* styles.scss */
+// .buttonShowHide {
+//   background-color: none;
+//   border: 1px solid #000;
+//   padding: 2px 4px; // Adjust padding
+//   border-radius: 2px; // Add border radius for rounded corners
+//   color: #000;
+//   font-family: 'Monument Extended Ultrabold', sans-serif;
+//   font-weight: bold;
+
+//   &.active {
+//     background-color: #000;
+//     color: #fff;
+//   }
+
+//   &:hover {
+//     transform: scale(1.05);
+//     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+//   }
+// }
+
+// .plus-icon,
+// .close-icon {
+//   font-weight: bold;
+//   /* Make the Plus icon bold */
+
+// }
+
+// .close-icon {
+//   /* Initial rotation to make it an X */
+// }
+
+// .buttonShowHide.active .plus-icon {
+//   /* Rotate the Plus icon to become an X when the button is active */
+// }
+
+// .buttonShowHide.active .close-icon {
+//   /* Rotate the Close icon to its original position when the button is active */
+// }
+
+// .button-container {
+//   display: flex;
+//   align-items: center;
+//   /* Vertically center the button and text */
+// }
+
+// .button-text {
+//   margin-left: 20px;
+//   /* Adjust the spacing between the icon and text */
+//   margin-right: 20px;
+//   /* Add margin on the right to separate the text from the icon */
+// }
+/* styles.scss */
+.hr {
+  display: block;
+  height: 2px;
+  width: 286px;
+  padding: 1px 5px;
+  border-width: 0;
+  color: #000;
+  background-color: #000;
+}
+
+.border {
+  background-color: #fff;
+  border: 2px solid #000;
+  color: #000;
+  padding: 1px 10px;
+  border-radius: 3px
+}
+
+$animation-duration: 0.5s;
+
+.buttonShowHide {
+  background-color: #fff;
+  // border: 1px solid #000;
+  color: #000;
+  padding: 1px 5px;
+  // border-radius: 3px;
+  font-family: 'Monument Extended Ultrabold', sans-serif;
+  font-weight: bold;
+  transition: background-color $animation-duration;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .buttonShowHide span {
+    flex: 2;
+    /* Văn bản TECH SPECS sẽ chiếm một phần ngang bằng biểu tượng */
+  }
+
+  // .plus-icon,
+  // .close-icon {
+  //   margin-top: -3px;
+  //   /* Điều chỉnh để biểu tượng nằm cao hơn */
+  // }
+
+  &.active {
+    background-color: #000;
+    color: #fff;
+  }
+
+  &:hover {
+    background-color: #000;
+    /* Change background color to black on hover */
+    color: #fff;
+    /* Change text color to white on hover */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// aa
+.tech {
+  margin-right: 145px;
+  font-size: 12px;
+}
+
+
+.plus-icon,
+.close-icon {
+  font-weight: bold;
+  margin-top: -2px;
+  transition: transform 3000s ease;
+  /* Make the Plus icon bold */
+
+}
+
+.close-icon {
+  transform: rotate(45deg);
+
+
+  /* Initial rotation to make it an X */
+}
+
+.buttonShowHide.active .plus-icon {
+  transform: rotate(45deg);
+  /* Rotate the Plus icon to become an X when the button is active */
+}
+
+.buttonShowHide.active .close-icon {
+  transform: rotate(deg);
+  /* Rotate the Close icon to its original position when the button is active */
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  /* Vertically center the button and text */
+}
+
+.plus-icon.rotate-icon,
+.close-icon.rotate-icon {
+  transition: transform 0.3s ease;
+  /* Thời gian và hiệu ứng chuyển đổi */
+}
+
+.rotate-icon {
+  transform: rotate(360deg);
+  /* Góc xoay 90 độ */
+}
+
+.bulleted-paragraph {
+  list-style-type: disc;
+  margin-left: 10px; // Điều chỉnh khoảng cách giữa dấu chấm và nội dung
+
+}
+
+div {
+  .boldDescription {
+    // CSS cho phần tử .boldDescription
+  }
+
+
+  p {
+
+    &.description1,
+    &.description2,
+    &.description3,
+    &.description4,
+    &.description5,
+    &.description6,
+    &.description7,
+    &.description8,
+    &.description9,
+    &.description10,
+    &.description11,
+    &.description12,
+    &.description13,
+    &.description14,
+    &.description15,
+    &.description16,
+    &.description17,
+    &.description18,
+    &.description19,
+    &.description20 // Thêm tất cả các phần tử p cần áp dụng lớp .bulleted-paragraph
+
+      {
+      @extend .bulleted-paragraph;
+    }
+  }
+
+  // Thêm các phần tử p khác ở đây và áp dụng lớp "bulleted-paragraph"
+}
