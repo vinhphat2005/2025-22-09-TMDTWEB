@@ -51,6 +51,7 @@ const AdminProduct = ({
   } = useAdmin();
 
   const [images, setImages] = useState(productImages || []);
+  const [pendingFiles, setPendingFiles] = useState([]); // File objects chưa upload
 
   const [productInput, setProductInput] = useState({
     model: productModel || '',
@@ -105,33 +106,43 @@ const AdminProduct = ({
       : (inputFiles = e.target.files);
 
     if (inputFiles.length > 0) {
-      const updatedImages = await uploadFiles('product-images', {
-        currentFiles: [...images],
-        newFiles: [...inputFiles],
-      });
-
-      setImages(updatedImages);
+      // Tạo preview URLs tạm thời (chưa upload)
+      const newPendingFiles = Array.from(inputFiles).map(file => ({
+        file,
+        name: file.name,
+        src: URL.createObjectURL(file),
+        id: `temp-${Date.now()}-${file.name}`,
+        isPending: true
+      }));
+      
+      setPendingFiles(prev => [...prev, ...newPendingFiles]);
+      setImages(prev => [...prev, ...newPendingFiles]);
     }
   };
 
   const handleDeleteImage = (fileName) => {
+    const imageToDelete = images.find((image) => image.name === fileName);
     const updatedImages = images.filter((image) => image.name !== fileName);
-    const imageMarkedForRemoval = images.find(
-      (image) => image.name === fileName
-    );
 
-    if (!isEditPage) {
-      deleteFile('product-images', imageMarkedForRemoval);
+    // Nếu là ảnh pending (chưa upload), chỉ xóa khỏi state
+    if (imageToDelete?.isPending) {
+      setPendingFiles(prev => prev.filter(f => f.name !== fileName));
+      // Revoke object URL để tránh memory leak
+      URL.revokeObjectURL(imageToDelete.src);
     } else {
-      const updatedImagesMarkedForRemoval = [...imagesMarkedForRemoval];
-      updatedImagesMarkedForRemoval.push(imageMarkedForRemoval);
-      setImagesMarkedForRemoval(updatedImagesMarkedForRemoval);
+      // Nếu là ảnh đã upload, xử lý như cũ
+      if (!isEditPage) {
+        deleteFile('product-images', imageToDelete);
+      } else {
+        const updatedImagesMarkedForRemoval = [...imagesMarkedForRemoval];
+        updatedImagesMarkedForRemoval.push(imageToDelete);
+        setImagesMarkedForRemoval(updatedImagesMarkedForRemoval);
+      }
     }
 
     const updatedVariants = [...variants];
-
     for (const variant of updatedVariants) {
-      variant.images = variant.images.filter((image) => image !== fileName);
+      variant.images = variant.images.filter((image) => image.name !== fileName);
     }
 
     setImages(updatedImages);
@@ -245,23 +256,71 @@ const AdminProduct = ({
 
   const handleProductSubmit = async (e) => {
     e.preventDefault();
+    
+    console.log('🔵 Starting product submit...');
+    console.log('Pending files:', pendingFiles.length);
+    console.log('Images:', images.length);
+    console.log('Variants:', variants.length);
+    
+    let finalImages = [];
+    
+    // Tách ảnh đã upload và ảnh pending
+    const uploadedImages = images.filter(img => !img.isPending);
+    const pendingImages = images.filter(img => img.isPending);
+    
+    console.log('Already uploaded:', uploadedImages.length);
+    console.log('Need to upload:', pendingImages.length);
+    
+    // Giữ lại ảnh đã upload
+    finalImages = [...uploadedImages];
+    
+    // Upload ảnh pending nếu có
+    if (pendingImages.length > 0) {
+      console.log('⏳ Uploading pending files...');
+      const newlyUploadedImages = await uploadFiles('product-images', {
+        currentFiles: uploadedImages,
+        newFiles: pendingImages.map(img => img.file),
+      });
+      
+      console.log('✅ Upload complete');
+      
+      // Revoke object URLs
+      pendingImages.forEach(img => URL.revokeObjectURL(img.src));
+      
+      // Cập nhật finalImages với kết quả upload mới
+      finalImages = newlyUploadedImages;
+      setPendingFiles([]);
+      setImages(newlyUploadedImages);
+    }
+    
+    console.log('Final images:', finalImages.length);
+    console.log('Final images details:', finalImages);
+    console.log('Variants details:', variants.map(v => ({
+      color: v.color,
+      images: v.images,
+      imageNames: v.images?.map(img => img.name)
+    })));
+    
     let productData = { ...productInput };
     productData.sizes = sizes;
     productData.tags = tags;
 
     if (isEditPage) {
       productData.id = productId;
+      console.log('📝 Editing product...');
       await editProduct({
         productData,
         variants,
         currentInventoryLevels,
-        images,
+        images: finalImages,
         imagesMarkedForRemoval,
       });
     } else {
-      await createProduct({ productData, variants, images });
+      console.log('➕ Creating product...');
+      await createProduct({ productData, variants, images: finalImages });
     }
 
+    console.log('✅ Product submit complete!');
     setNavigation(true);
   };
 
@@ -306,17 +365,14 @@ const AdminProduct = ({
 
   return (
     <>
-      <CenterModal
-        toggleModal={closeConfirm}
-        modalClassName={styles.confirm_modal}
-      >
-        {isConfirmOpen && (
-          <ConfirmModal
-            text="Are you sure you want to delete this product? There is no way to undo this."
-            handleConfirm={handleDeleteOnConfirm}
-          />
-        )}
-      </CenterModal>
+      {isConfirmOpen && (
+        <ConfirmModal
+          show={isConfirmOpen}
+          close={closeConfirm}
+          handleConfirm={handleDeleteOnConfirm}
+          text="Are you sure you want to delete this product? There is no way to undo this."
+        />
+      )}
       {isLoading && <Loader />}
       <section>
         <div className={`${styles.container} main-container`}>

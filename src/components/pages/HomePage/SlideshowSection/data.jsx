@@ -22,15 +22,15 @@ export const BIG_SCREEN_SLIDES = [
   },
   // {
   //   src: Slide4,
-  //   id: 1,
+  //   id: 4,
   // },
   {
     src: Slide5,
-    id: 2,
+    id: 5,
   },
   {
     src: Slide6,
-    id: 3,
+    id: 6,
 
   },
 
@@ -52,14 +52,14 @@ export const SMALL_SCREEN_SLIDES = [
   },
   // {
   //   src: Slide4,
-  //   id: 1,
+  //   id: 4,
   // },
   {
     src: Slide5,
-    id: 2,
+    id: 5,
   },
   {
     src: Slide6,
-    id: 3,
+    id: 6,
   },
 ];

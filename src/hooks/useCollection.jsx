@@ -66,6 +66,9 @@ export const useCollection = () => {
 
       const productsSnapshot = await getDocs(productsQuery);
 
+      console.log('📦 Products fetched from Firestore:', productsSnapshot.size);
+      console.log('📦 Product IDs:', productsSnapshot.docs.map(d => d.id));
+
       if (productsSnapshot.size === 0) {
         setHasMore(false);
         setIsLoading(false);

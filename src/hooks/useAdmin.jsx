@@ -13,25 +13,27 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from 'firebase/storage';
 
-import { db, storage } from 'db/config';
+import { db } from 'db/config';
+import { uploadToCloudinary, deleteFromCloudinary } from 'helpers/cloudinary';
 
 export const useAdmin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const skuSizeCode = {
+    // Clothing sizes
     s: 'sm',
     m: 'md',
     l: 'lg',
     xl: 'xl',
     xxl: 'xx',
+    // Storage sizes
+    '64GB': '64',
+    '128GB': '128',
+    '256GB': '256',
+    '512GB': '512',
+    '1TB': '1TB',
   };
 
   const uploadFiles = async (directory, { currentFiles, newFiles }) => {
@@ -47,14 +49,10 @@ export const useAdmin = () => {
             (image) => image.name === newFile.name
           );
 
-          const id = uuid();
-          const uploadPath = `${directory}/${id}/${newFile.name}`;
-          const storageRef = ref(storage, uploadPath);
-          await uploadBytes(storageRef, newFile);
-          const fileURL = await getDownloadURL(storageRef);
-
           if (!checkForExistingImage) {
-            updatedFiles.push({ id, name: newFile.name, src: fileURL });
+            // Upload to Cloudinary
+            const uploadedImage = await uploadToCloudinary(newFile, directory);
+            updatedFiles.push(uploadedImage);
           }
         }
       }
@@ -65,11 +63,13 @@ export const useAdmin = () => {
     }
   };
 
-  const deleteFile = (directory, file) => {
-    const uploadPath = `${directory}/${file.id}/${file.name}`;
-    const storageRef = ref(storage, uploadPath);
-
-    deleteObject(storageRef);
+  const deleteFile = async (directory, file) => {
+    try {
+      // Delete from Cloudinary using public_id
+      await deleteFromCloudinary(file.id);
+    } catch (err) {
+      console.error('Error deleting file:', err);
+    }
   };
 
   const getProduct = async (productId) => {
@@ -77,16 +77,39 @@ export const useAdmin = () => {
     setIsLoading(true);
 
     try {
+      console.log('🔍 Getting product:', productId);
+      
       const productRef = doc(db, 'products', productId);
       const docSnap = await getDoc(productRef);
 
+      if (!docSnap.exists()) {
+        throw new Error('Product not found');
+      }
+
       const product = { id: docSnap.id, ...docSnap.data() };
+
+      console.log('📄 Product data:', product);
+
+      // Fetch variants from subcollection
+      const variantsRef = collection(productRef, 'variants');
+      const variantsSnapshot = await getDocs(variantsRef);
+      
+      const variants = [];
+      variantsSnapshot.forEach((doc) => {
+        variants.push({ id: doc.id, ...doc.data() });
+      });
+
+      console.log(`📦 Fetched ${variants.length} variants from subcollection`);
+
+      product.variants = variants;
 
       let images = [];
 
       for (const variant of product.variants) {
         images = [...images, ...variant.images];
       }
+
+      console.log('📸 Total images:', images.length);
 
       let inventory = [];
 
@@ -98,6 +121,8 @@ export const useAdmin = () => {
       inventorySnapshot.forEach((doc) => {
         inventory.push({ id: doc.id, ...doc.data() });
       });
+
+      console.log('📊 Inventory items:', inventory.length);
 
       const currentInventoryLevels = [];
 
@@ -119,12 +144,20 @@ export const useAdmin = () => {
         delete product.variants[i].inventoryLevels;
       }
 
+      // Dynamic sizes detection from inventory
+      const allSizes = [...new Set(inventory.map(item => item.value))];
+      
       const sizesInput = {
         s: false,
         m: false,
         l: false,
         xl: false,
         xxl: false,
+        '64GB': false,
+        '128GB': false,
+        '256GB': false,
+        '512GB': false,
+        '1TB': false,
       };
 
       const selectedSizes = Object.keys(product.variants[0].inventory);
@@ -139,10 +172,18 @@ export const useAdmin = () => {
       product.currentInventoryLevels = currentInventoryLevels;
       product.baseSku = currentInventoryLevels[0].id.split('-')[0];
 
+      console.log('✅ Product fetched successfully:', {
+        id: product.id,
+        model: product.model,
+        variantCount: product.variants.length,
+        imageCount: images.length
+      });
+
       setIsLoading(false);
 
       return product;
     } catch (err) {
+      console.error('❌ Error getting product:', err);
       setError(err);
       setIsLoading(false);
     }
@@ -181,6 +222,8 @@ export const useAdmin = () => {
         description: formattedDescription,
         variantSlugs: [],
         variants: [],
+        createdAt: new Date().toISOString(),
+        price: 0, // Will be updated from first variant
       };
 
       let currentImagesInUse = [];
@@ -188,7 +231,15 @@ export const useAdmin = () => {
       const batch = writeBatch(db);
 
       for (let variant of variants) {
-        currentImagesInUse = [...currentImagesInUse, ...variant.images];
+        // Map variant.images để chỉ lấy uploaded images (không có File object)
+        const variantUploadedImages = variant.images
+          ?.map(imgRef => {
+            // Tìm image đã upload trong finalImages array
+            return images.find(img => img.name === imgRef.name);
+          })
+          .filter(img => img && !img.file && !img.isPending); // Loại bỏ pending/File objects
+
+        currentImagesInUse = [...currentImagesInUse, ...variantUploadedImages];
 
         let variantSlug = `${product.type} ${product.model}`;
         if (variant.colorDisplay) {
@@ -212,9 +263,12 @@ export const useAdmin = () => {
           skuColor = variant.color.substr(0, 3);
         }
 
-        const { inventory: variantInventory, ...variantContent } = variant;
+        const { inventory: variantInventory, images: variantImages, ...variantContent } = variant;
 
         variantContent.slug = formattedVariantSlug;
+        
+        // Use uploaded images (without File objects)
+        variantContent.images = variantUploadedImages;
 
         variantContent.inventoryLevels = [];
 
@@ -237,31 +291,109 @@ export const useAdmin = () => {
         product.variants.push(variantContent);
       }
 
+      // Set product price và slug
+      if (product.variants.length > 0) {
+        product.price = product.variants[0].actualPrice || product.variants[0].variantPrice || 0;
+      }
+      product.slug = `${product.type} ${product.model}`.replaceAll(' ', '-').toLowerCase();
+
       const currentImagesInUseNames = currentImagesInUse.map(
         (image) => image.name
       );
+
+      console.log('📸 Images in use by variants:', currentImagesInUseNames);
+      console.log('📸 Total images uploaded:', images.map(i => i.name));
 
       const imagesToBeDeleted = images.filter(
         (image) => !currentImagesInUseNames.includes(image.name)
       );
 
-      if (imagesToBeDeleted.length > 0) {
-        for (const image of imagesToBeDeleted) {
-          const uploadPath = `product-images/${image.id}/${image.name}`;
-          const storageRef = ref(storage, uploadPath);
+      console.log('🗑️ Images to delete:', imagesToBeDeleted.map(i => i.name));
 
-          deleteObject(storageRef);
+      if (imagesToBeDeleted.length > 0) {
+        console.warn('⚠️ Deleting unused images. Make sure variants have images assigned!');
+        for (const image of imagesToBeDeleted) {
+          await deleteFromCloudinary(image.id);
         }
       }
 
       await batch.commit();
 
+      console.log('✅ Batch commit successful (inventory saved)');
+
       const productRef = doc(db, 'products', productId);
+
+      // Extract variants to save separately
+      const productVariants = [...product.variants];
+      delete product.variants; // Remove from product object
+
+      console.log('💾 Saving product to Firestore:', {
+        productId,
+        collection: product.collection,
+        model: product.model,
+        variantCount: productVariants.length
+      });
+
+      console.log('📄 Full product object:', product);
 
       await setDoc(productRef, product);
 
+      console.log('✅ Product saved successfully to Firestore!');
+
+      // Save variants to subcollection
+      console.log('💾 Saving variants to subcollection...');
+      for (const variant of productVariants) {
+        const variantRef = doc(productRef, 'variants', variant.id);
+        const { id, ...variantData } = variant; // Remove id from data
+        
+        // Convert variantPrice structure
+        const variantToSave = {
+          ...variantData,
+          variantPrice: variantData.currentPrice,
+        };
+        delete variantToSave.currentPrice;
+        delete variantToSave.actualPrice; // actualPrice is in product level
+        
+        await setDoc(variantRef, variantToSave);
+        console.log(`  ✅ Saved variant: ${variant.color}`);
+      }
+
+      console.log('✅ All variants saved to subcollection!');
+
+      // Save SKUs to subcollection
+      console.log('💾 Saving SKUs to subcollection...');
+      for (const variant of productVariants) {
+        let skuOrder = 1;
+        for (const inventoryLevel of variant.inventoryLevels) {
+          const skuRef = doc(productRef, 'skus', inventoryLevel.sku);
+          
+          // Get inventory stock from inventory collection
+          const inventoryRef = doc(db, 'inventory', inventoryLevel.sku);
+          const inventorySnap = await getDoc(inventoryRef);
+          const stock = inventorySnap.exists() ? inventorySnap.data().stock : 0;
+          const size = inventorySnap.exists() ? inventorySnap.data().value : '';
+          
+          const skuData = {
+            order: skuOrder++,
+            quantity: stock,
+            size: size,
+            variantId: variant.id,
+          };
+          
+          await setDoc(skuRef, skuData);
+        }
+      }
+      
+      console.log('✅ All SKUs saved to subcollection!');
+
       setIsLoading(false);
     } catch (err) {
+      console.error('❌ Error creating product:', err);
+      console.error('Error details:', {
+        message: err.message,
+        code: err.code,
+        stack: err.stack
+      });
       setError(err);
       setIsLoading(false);
     }
@@ -279,10 +411,7 @@ export const useAdmin = () => {
 
     try {
       for (const image of imagesMarkedForRemoval) {
-        const uploadPath = `product-images/${image.id}/${image.name}`;
-        const storageRef = ref(storage, uploadPath);
-
-        deleteObject(storageRef);
+        await deleteFromCloudinary(image.id);
       }
 
       const formattedModel = productData.model
@@ -383,10 +512,7 @@ export const useAdmin = () => {
 
       if (imagesToBeDeleted.length > 0) {
         for (const image of imagesToBeDeleted) {
-          const uploadPath = `product-images/${image.id}/${image.name}`;
-          const storageRef = ref(storage, uploadPath);
-
-          deleteObject(storageRef);
+          await deleteFromCloudinary(image.id);
         }
       }
 
@@ -429,10 +555,7 @@ export const useAdmin = () => {
       );
 
       for (const image of variantToBeDeleted.images) {
-        const uploadPath = `product-images/${image.id}/${image.name}`;
-        const storageRef = ref(storage, uploadPath);
-
-        deleteObject(storageRef);
+        await deleteFromCloudinary(image.id);
       }
 
       const batch = writeBatch(db);
@@ -469,36 +592,63 @@ export const useAdmin = () => {
     setIsLoading(true);
 
     try {
+      console.log('🗑️ Deleting product:', productId);
+      
       const productRef = doc(db, 'products', productId);
+      const productSnap = await getDoc(productRef);
 
-      const docSnap = await getDoc(productRef);
-
-      let product = { id: docSnap.id, ...docSnap.data() };
+      if (!productSnap.exists()) {
+        throw new Error('Product not found');
+      }
 
       const batch = writeBatch(db);
 
-      for (const variant of product.variants) {
-        for (const image of variant.images) {
-          const uploadPath = `product-images/${image.id}/${image.name}`;
-          const storageRef = ref(storage, uploadPath);
+      // 1. Get all variants from subcollection
+      const variantsRef = collection(productRef, 'variants');
+      const variantsSnap = await getDocs(variantsRef);
+      
+      console.log(`  📦 Found ${variantsSnap.size} variants`);
 
-          deleteObject(storageRef);
+      // 2. Delete images from Cloudinary
+      for (const variantDoc of variantsSnap.docs) {
+        const variant = variantDoc.data();
+        if (variant.images && variant.images.length > 0) {
+          for (const image of variant.images) {
+            console.log(`  🖼️ Deleting image: ${image.name}`);
+            await deleteFromCloudinary(image.id);
+          }
         }
-
-        for (const item of variant.inventoryLevels) {
-          const skuInventoryRef = doc(db, 'inventory', item.sku);
-
-          batch.delete(skuInventoryRef);
-        }
+        // Delete variant document
+        batch.delete(variantDoc.ref);
       }
 
+      // 3. Delete all SKUs from subcollection
+      const skusRef = collection(productRef, 'skus');
+      const skusSnap = await getDocs(skusRef);
+      
+      console.log(`  📦 Found ${skusSnap.size} SKUs`);
+
+      for (const skuDoc of skusSnap.docs) {
+        // Delete from inventory collection
+        const inventoryRef = doc(db, 'inventory', skuDoc.id);
+        batch.delete(inventoryRef);
+        
+        // Delete SKU document
+        batch.delete(skuDoc.ref);
+      }
+
+      // 4. Commit batch deletions
       await batch.commit();
+      console.log('  ✅ Batch deletions committed');
 
+      // 5. Delete product document
       await deleteDoc(productRef);
+      console.log('  ✅ Product document deleted');
 
+      console.log('✅ Product deleted successfully!');
       setIsLoading(false);
     } catch (err) {
-      console.error(err);
+      console.error('❌ Error deleting product:', err);
       setError(err);
       setIsLoading(false);
     }

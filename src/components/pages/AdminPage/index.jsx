@@ -30,12 +30,12 @@ const AdminPage = () => {
         <div className={`${styles.container} main-container`}>
           <h1>Panel</h1>
           <div className={styles.options_wrapper}>
-            {/* <Link to="/admin/products" className={styles.option}>
+            <Link to="/admin/products" className={styles.option}>
               <div>Products</div>
             </Link>
             <Link to="/admin/products/add" className={styles.option}>
               <div>Add Product</div>
-            </Link> */}
+            </Link>
             <div
               onClick={() => setNeedConfirm(true)}
               className={`${styles.option} ${styles.seed}`}

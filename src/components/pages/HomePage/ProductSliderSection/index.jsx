@@ -33,11 +33,13 @@ const ProductSliderSection = ({ titleTop, titleBottom, sortBy }) => {
         sortBy,
       });
 
-      setSlides(
-        fetchedVariants.sort((a, b) =>
-          a.color.toUpperCase() > b.color.toUpperCase() ? 1 : -1
-        )
-      );
+      if (fetchedVariants && Array.isArray(fetchedVariants)) {
+        setSlides(
+          fetchedVariants.sort((a, b) =>
+            a.color.toUpperCase() > b.color.toUpperCase() ? 1 : -1
+          )
+        );
+      }
     })();
   }, []);
 

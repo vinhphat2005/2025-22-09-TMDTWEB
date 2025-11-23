@@ -131,24 +131,19 @@ const VariantForm = ({
 
   return (
     <>
-      <CenterModal
-        toggleModal={closeConfirm}
-        modalClassName={styles.confirm_modal}
-      >
-        {isConfirmOpen && (
-          <ConfirmModal
-            isConfirmOpen={isConfirmOpen}
-            handleConfirm={handleDeleteOnConfirm}
-            handleCancel={closeConfirm}
-            text="Are you sure you want to delete this variant?"
-          />
-        )}
-      </CenterModal>
-      <CenterModal
-        modalClassName={styles.modal}
-        toggleModal={closeImageSelector}
-      >
-        {isSelectorOpen && (
+      {isConfirmOpen && (
+        <ConfirmModal
+          show={isConfirmOpen}
+          close={closeConfirm}
+          handleConfirm={handleDeleteOnConfirm}
+          text="Are you sure you want to delete this variant?"
+        />
+      )}
+      {isSelectorOpen && (
+        <CenterModal
+          modalClassName={styles.modal}
+          toggleModal={closeImageSelector}
+        >
           <ImageSelect
             images={images}
             currentlySelectedImages={selectedImages}
@@ -156,8 +151,8 @@ const VariantForm = ({
             handleImageConfirm={handleImageConfirm}
             closeImageSelector={closeImageSelector}
           />
-        )}
-      </CenterModal>
+        </CenterModal>
+      )}
       <form onSubmit={handleEditSubmit} className={styles.form_container}>
         <div
           className={`${styles.controls_container} ${controlsContainerEditingStyles}`}
@@ -228,8 +223,7 @@ const VariantForm = ({
                       <span className={styles.color_header}>
                         Color
                         <ToolTip className={styles.tooltip}>
-                          Escribir color masculino. Ejemplo: blanco sí, blanca
-                          no.
+                          Màu sắc cơ bản dùng cho URL và hệ thống. Ví dụ: white, black, gray
                         </ToolTip>
                         <i>
                           <FaQuestionCircle />
@@ -240,9 +234,7 @@ const VariantForm = ({
                       <span className={styles.color_header}>
                         Color Display
                         <ToolTip className={styles.tooltip}>
-                          Escribir color con género gramatical correcto según el
-                          tipo de producto. Ejemplo: remera y blanco, escribir
-                          blanca.
+                          Màu hiển thị cho khách hàng (có thể để trống nếu giống Color). Ví dụ: Trắng, Đen, Xám
                         </ToolTip>
                         <i>
                           <FaQuestionCircle />
@@ -256,9 +248,7 @@ const VariantForm = ({
                       <span className={styles.actual_price_header}>
                         Actual Price{' '}
                         <ToolTip className={styles.tooltip}>
-                          Un "current price" menor al "actual" muestra al
-                          product "ON SALE". Se calcula automaticamente el
-                          porcentaje de descuento.
+                          Giá gốc sản phẩm. Nếu Current Price thấp hơn Actual Price, sản phẩm sẽ hiển thị nhãn SALE với % giảm giá tự động.
                         </ToolTip>
                         <i>
                           <FaQuestionCircle />

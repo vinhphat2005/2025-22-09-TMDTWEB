@@ -91,11 +91,11 @@ const ProductCard = ({
     });
   };
 
-  const allVariantSlides = allVariants.map((variant) => ({
+  const allVariantSlides = allVariants?.map((variant) => ({
     ...variant.slides[0],
     id: variant.variantId,
     url: null,
-  }));
+  })) || [];
 
   return (
     <div
@@ -312,11 +312,11 @@ ProductCard.propTypes = {
       isSoldOut: PropTypes.bool.isRequired,
     })
   ).isRequired,
-  nested: PropTypes.bool.isRequired,
-  onTouchStart: PropTypes.func.isRequired,
-  onTouchEnd: PropTypes.func.isRequired,
-  expandableClassName: PropTypes.string.isRequired,
-  onCardPick: PropTypes.func.isRequired,
+  nested: PropTypes.bool,
+  onTouchStart: PropTypes.func,
+  onTouchEnd: PropTypes.func,
+  expandableClassName: PropTypes.string,
+  onCardPick: PropTypes.func,
 };
 
 export default ProductCard;

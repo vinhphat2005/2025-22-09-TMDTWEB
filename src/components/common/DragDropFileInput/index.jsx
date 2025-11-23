@@ -70,22 +70,15 @@ const DragDropFileInput = ({
 
   return (
     <>
-      {needsConfirmOnDelete && (
-        <CenterModal
-          toggleModal={closeConfirm}
-          modalClassName={styles.confirm_modal}
-        >
-          {isConfirmOpen && (
-            <ConfirmModal
-              isConfirmOpen={isConfirmOpen}
-              handleConfirm={handleDeleteOnConfirm}
-              handleCancel={closeConfirm}
-              text={`Are you sure you want to delete this ${
-                title.split('s')[0] || 'file'
-              }? This image will also be removed from any variant currently using it. ${additionalConfirmText}`}
-            />
-          )}
-        </CenterModal>
+      {needsConfirmOnDelete && isConfirmOpen && (
+        <ConfirmModal
+          show={isConfirmOpen}
+          close={closeConfirm}
+          handleConfirm={handleDeleteOnConfirm}
+          text={`Are you sure you want to delete this ${
+            title.split('s')[0] || 'file'
+          }? This image will also be removed from any variant currently using it. ${additionalConfirmText}`}
+        />
       )}
       <div className={className}>
         <div

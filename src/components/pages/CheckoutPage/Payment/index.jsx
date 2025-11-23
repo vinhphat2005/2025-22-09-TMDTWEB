@@ -6,26 +6,29 @@ import { BiChevronLeft } from 'react-icons/bi';
 
 import { useAuthContext } from 'hooks/useAuthContext';
 import { useCheckoutContext } from 'hooks/useCheckoutContext';
+import { useCartContext } from 'hooks/useCartContext';
 import { useCheckout } from 'hooks/useCheckout';
 import { useOrder } from 'hooks/useOrder';
 
 import CheckoutSummary from '../CheckoutSummary';
 import AddressForm from '../AddressForm';
 import { Button, Loader } from 'components/common';
+import PayPalButton from 'components/common/PayPalButton';
 import { formatCardNumber, formatExpiryDate, formatCvv } from 'helpers/format';
 import styles from './index.module.scss';
-import { PayPalButton } from "react-paypal-button-v2";
 
 const Payment = () => {
   const navigate = useNavigate();
 
   const { addresses } = useAuthContext();
-  const { shippingAddress } = useCheckoutContext();
+  const { shippingAddress, shippingCost } = useCheckoutContext();
+  const { items } = useCartContext();
   const { selectPreviousStep } = useCheckout();
   const { createOrder, isLoading, error } = useOrder();
 
-  const [paymentOption, setPaymentOption] = useState('creditCard');
+  const [paymentOption, setPaymentOption] = useState('paypal');
   const [navigation, setNavigation] = useState(false);
+  const [showPayPalButton, setShowPayPalButton] = useState(false);
 
   const [cardInput, setCardInput] = useState({
     cardNumber: '',
@@ -157,13 +160,65 @@ const Payment = () => {
     }
   };
 
+  useEffect(() => {
+    if (paymentOption === 'paypal') {
+      setShowPayPalButton(true);
+    } else {
+      setShowPayPalButton(false);
+    }
+  }, [paymentOption]);
+
+  const handlePayPalSuccess = async (order) => {
+    console.log('💳 PayPal Payment Success:', order);
+
+    // Extract payment info from PayPal order
+    const paymentInfo = {
+      method: 'paypal',
+      orderId: order.id,
+      status: order.status,
+      payerEmail: order.payer.email_address,
+      payerName: `${order.payer.name.given_name} ${order.payer.name.surname}`,
+      amount: order.purchase_units[0].amount.value,
+      currency: order.purchase_units[0].amount.currency_code,
+      createTime: order.create_time,
+      updateTime: order.update_time,
+    };
+
+    // Create order in Firestore
+    await createOrder(paymentInfo, {
+      address: billingInput.address,
+      city: billingInput.city,
+      id: billingInput.id,
+      name: billingInput.name,
+      lastName: billingInput.lastName,
+      phoneNumber: billingInput.phoneNumber,
+      state: billingInput.state,
+      zipCode: billingInput.zipCode,
+    });
+
+    setNavigation(true);
+  };
+
+  const handlePayPalError = (error) => {
+    console.error('❌ PayPal Error:', error);
+    alert('Đã xảy ra lỗi trong quá trình thanh toán PayPal. Vui lòng thử lại.');
+  };
+
+  const handlePayPalCancel = () => {
+    console.log('⚠️ PayPal Payment Cancelled');
+    alert('Bạn đã hủy thanh toán PayPal.');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (paymentOption !== 'creditCard' && paymentOption !== 'PaypalDelivery') {
-    //   // Nếu chưa chọn, hiển thị thông báo và ngăn chặn việc thực hiện hành động tiếp theo
-    //   alert('Please select a payment method (Credit card or Paypal).');
-    //   return;
-    // }
+
+    // PayPal payment is handled by PayPalButton component
+    if (paymentOption === 'paypal') {
+      alert('Vui lòng sử dụng nút PayPal bên dưới để thanh toán.');
+      return;
+    }
+
+    // Credit Card or Cash on Delivery
     await createOrder(cardInput, {
       address: billingInput.address,
       city: billingInput.city,
@@ -240,6 +295,39 @@ const Payment = () => {
                 <h2 className={styles.title}>Payment Method</h2>
 
                 <div className={styles.payment_options_wrapper}>
+                  <div>
+                    <label className={styles.payment_option}>
+                      <input
+                        type="radio"
+                        value="paypal"
+                        checked={paymentOption === 'paypal'}
+                        onChange={(e) => setPaymentOption(e.target.value)}
+                        className={
+                          paymentOption === 'paypal'
+                            ? styles.radio_selected
+                            : styles.radio_unselected
+                        }
+                      />
+                      <span>PayPal</span>
+                    </label>
+                  </div>
+                  
+                  {paymentOption === 'paypal' && showPayPalButton && (
+                    <div className={styles.paypal_button_wrapper}>
+                      <PayPalButton
+                        amount={
+                          items.reduce((total, item) => total + (item.price * item.quantity), 0) / 25000 + shippingCost / 25000
+                        }
+                        onSuccess={handlePayPalSuccess}
+                        onError={handlePayPalError}
+                        onCancel={handlePayPalCancel}
+                      />
+                      <p className={styles.paypal_note}>
+                        💡 Tỷ giá: 1 USD ≈ 25,000 VND (demo purposes)
+                      </p>
+                    </div>
+                  )}
+                  
                   <div>
                     <label className={styles.payment_option}>
                       <input

@@ -42,7 +42,22 @@ const authReducer = (state, action) => {
       };
     }
 
-    // Rest of the reducer cases...
+    case 'UPDATE_ADDRESSES': {
+      return {
+        ...state,
+        addresses: action.payload,
+      };
+    }
+
+    case 'UPDATE_PROFILE': {
+      return {
+        ...state,
+        name: action.payload.name,
+        lastName: action.payload.lastName,
+        email: action.payload.email,
+        phoneNumber: action.payload.phoneNumber,
+      };
+    }
 
     default: {
       return state;

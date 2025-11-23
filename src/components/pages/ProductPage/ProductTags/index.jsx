@@ -11,13 +11,12 @@ const ProductTags = ({ currentPrice, actualPrice, tags = [] }) => {
         </span>
       )}
       {tags.map((tag) => (
-        <></>
-        // <span
-        //   key={tag.content}
-        //   className={tag.content === 'nuevo' ? styles.tag_alt : styles.tag}
-        // >
-        //   {tag.content}
-        // </span>
+        <span
+          key={tag.content}
+          className={styles.tag}
+        >
+          {tag.content}
+        </span>
       ))}
     </div>
   );
