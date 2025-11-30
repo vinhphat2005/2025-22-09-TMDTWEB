@@ -22,12 +22,27 @@ const SignUpPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await signUp({
+    const result = await signUp({
       name: nameInput.current.value,
       lastName: lastNameInput.current.value,
       email: emailInput.current.value,
       password: passwordInput.current.value,
     });
+
+    if (result?.success) {
+      sendToast({ 
+        error: false, 
+        content: { 
+          message: '✅ Account created successfully! Please check your email to verify your account.' 
+        } 
+      });
+      
+      // Clear form
+      nameInput.current.value = '';
+      lastNameInput.current.value = '';
+      emailInput.current.value = '';
+      passwordInput.current.value = '';
+    }
   };
 
   useEffect(() => {

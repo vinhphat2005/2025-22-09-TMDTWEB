@@ -239,6 +239,11 @@ const CartProvider = ({ children }) => {
         }
       };
       getCart();
+    } else {
+      // No user logged in - set cart as ready with empty items or local cart
+      dispatch({
+        type: 'CART_IS_READY',
+      });
     }
   }, [user]);
 

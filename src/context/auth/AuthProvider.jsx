@@ -1,6 +1,6 @@
 import { useReducer, useEffect } from 'react';
-import PropTypes from 'prop-types'; // Import PropTypes
-import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
+import PropTypes from 'prop-types';
+import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth } from 'db/config';
 import { db } from 'db/config';
@@ -59,6 +59,27 @@ const authReducer = (state, action) => {
       };
     }
 
+    case 'LOGIN': {
+      return {
+        user: action.payload.user,
+        name: action.payload.name,
+        lastName: action.payload.lastName,
+        email: action.payload.email,
+        phoneNumber: action.payload.phoneNumber || null,
+        addresses: action.payload.addresses || [],
+        isVerified: action.payload.isVerified || false,
+        isAdmin: action.payload.isAdmin || false,
+        authIsReady: true,
+      };
+    }
+
+    case 'LOGOUT': {
+      return {
+        ...initialState,
+        authIsReady: true,
+      };
+    }
+
     default: {
       return state;
     }
@@ -87,7 +108,15 @@ const AuthProvider = ({ children }) => {
           });
         }
       } else {
-        await signInAnonymously(auth);
+        // ❌ COMMENTED OUT: Don't auto-create anonymous users
+        // This was creating spam anonymous accounts
+        // await signInAnonymously(auth);
+        
+        // Just dispatch auth ready without user
+        dispatch({
+          type: 'AUTH_IS_READY',
+          payload: { user: null },
+        });
       }
     });
 

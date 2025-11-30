@@ -4,7 +4,7 @@ import { useAuthContext } from 'hooks/useAuthContext';
 import { useCartContext } from 'hooks/useCartContext';
 
 const ProtectedRoutes = ({ needAuth, needAdmin }) => {
-  const { isVerified, isAdmin } = useAuthContext();
+  const { user, isAdmin } = useAuthContext();
   const { cartIsReady } = useCartContext();
   const { pathname, state } = useLocation();
 
@@ -19,21 +19,21 @@ const ProtectedRoutes = ({ needAuth, needAdmin }) => {
   }
 
   if (needAuth) {
-    if (isVerified && cartIsReady) {
+    if (user && cartIsReady) {
       return <Outlet />;
     }
 
-    if (!isVerified && cartIsReady) {
+    if (!user && cartIsReady) {
       return <Navigate to="/account/login" state={pathname} />;
     }
   }
 
   if (!needAuth) {
-    if (!isVerified && cartIsReady) {
+    if (!user && cartIsReady) {
       return <Outlet />;
     }
 
-    if (isVerified && cartIsReady) {
+    if (user && cartIsReady) {
       if (state === '/checkout') {
         return <Navigate to={state} />;
       } else if (state === '/account') {

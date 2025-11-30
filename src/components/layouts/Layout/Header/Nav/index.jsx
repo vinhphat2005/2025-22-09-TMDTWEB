@@ -17,7 +17,9 @@ import styles from './index.module.scss';
 const Navbar = ({ toggleSideNav, openCartModal }) => {
   const { pathname } = useLocation();
 
-  const { isVerified, isAdmin, name, lastName } = useAuthContext();
+  const { isVerified, isAdmin, name, lastName, user } = useAuthContext();
+
+  console.log('🔐 Nav Auth State:', { user: !!user, isVerified, isAdmin, name, lastName });
 
   const [hasScrolled, setHasSrolled] = useState(false);
 
@@ -107,7 +109,7 @@ const Navbar = ({ toggleSideNav, openCartModal }) => {
             </Link>
           </li>
         </ul>
-        {!isVerified && (
+        {!user && (
           <Link
             to="/account/login"
             className={`${styles.link} ${styles.login_link}`}
@@ -115,7 +117,7 @@ const Navbar = ({ toggleSideNav, openCartModal }) => {
             Login
           </Link>
         )}
-        {isVerified && (
+        {user && (
           <Link to="/account" className={`${styles.link} ${styles.login_link}`}>
             {/* My Account, */}
             {name} {lastName}

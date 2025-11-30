@@ -50,10 +50,15 @@ export const useAuth = () => {
       await setDoc(doc(db, 'users', user.uid), userData);
 
       dispatchAuthAction({ type: 'LOGIN', payload: { user, ...userData } });
+      
+      setIsLoading(false);
+      
+      return { success: true, message: 'Account created! Please check your email to verify.' };
     } catch (err) {
       console.error(err);
       setError(handleError(err));
       setIsLoading(false);
+      return { success: false };
     }
   };
 
@@ -64,15 +69,20 @@ export const useAuth = () => {
 
     try {
       dispatchCartAction({ type: 'IS_LOGIN' });
-      const anonymousUser = user;
+      
+      // Only try to get anonymous cart if user exists (was previously anonymous)
+      if (user && user.uid) {
+        const anonymousCartRef = doc(db, 'carts', user.uid);
+        const anonymousCartDoc = await getDoc(anonymousCartRef);
 
-      const anonymousCartRef = doc(db, 'carts', anonymousUser.uid);
-      const anonymousCartDoc = await getDoc(anonymousCartRef);
+        await signInWithEmailAndPassword(auth, email, password);
 
-      await signInWithEmailAndPassword(auth, email, password);
-
-      if (anonymousCartDoc.exists()) {
-        deleteDoc(doc(db, 'carts', anonymousUser.uid));
+        if (anonymousCartDoc.exists()) {
+          deleteDoc(doc(db, 'carts', user.uid));
+        }
+      } else {
+        // No anonymous user, just sign in directly
+        await signInWithEmailAndPassword(auth, email, password);
       }
     } catch (err) {
       console.error(err);
