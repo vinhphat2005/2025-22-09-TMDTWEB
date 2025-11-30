@@ -23,18 +23,21 @@ import {
   ProductPage,
   CartPage,
   CheckoutPage,
+  VNPaySuccess,
+  VNPayMockPayment,
 } from './components/pages';
 
 import { Loader } from './components/common';
+import GoogleAnalytics from './components/common/GoogleAnalytics';
 
 import './App.scss';
 import 'swiper/css';
 const App = () => {
   const { authIsReady } = useAuthContext();
   const { cartIsReady } = useCartContext();
+  const location = useLocation();
   // mode
   // const [isDarkMode, setIsDarkMode] = useState(false);
-  // const location = useLocation();
   // const toggleDarkMode = () => {
   //   setIsDarkMode(!isDarkMode);
   // };
@@ -46,6 +49,7 @@ const App = () => {
 
   return (
     <>
+      <GoogleAnalytics />
       {/* tooggle mode */}
       {/* <div className={`app ${themeClass}`}> */}
       <div className="fonts_license">
@@ -73,6 +77,8 @@ const App = () => {
 
             />
             <Route path="cart" element={<CartPage />} />
+            <Route path="vnpay/success" element={<VNPaySuccess />} />
+            <Route path="vnpay/mock" element={<VNPayMockPayment />} />
 
             <Route element={<ProtectedRoutes needAuth={true} />}>
               <Route

@@ -1,0 +1,12 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow: /admin
+Disallow: /account
+Disallow: /checkout
+Disallow: /cart
+
+Allow: /
+Allow: /collections
+Allow: /products
+
+Sitemap: https://tmdt-web-2025.web.app/sitemap.xml

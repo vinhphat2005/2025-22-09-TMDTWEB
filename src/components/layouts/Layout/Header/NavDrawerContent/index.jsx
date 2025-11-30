@@ -121,7 +121,7 @@ const NavDrawerContent = ({ toggleSideNav }) => {
             </Link>
           </li>
           <li>
-            <a href="https://www.facebook.com/ngoc.vuong0126" target="_blank" rel="noreferrer">
+            <a href="https://www.facebook.com/vphat14/" target="_blank" rel="noreferrer">
 
               <FaQuestionCircle />
 
@@ -167,7 +167,7 @@ const NavDrawerContent = ({ toggleSideNav }) => {
             </Link>
           </li>
           <li>
-            <a href="https://www.facebook.com/ngoc.vuong0126" target="_blank" rel="noreferrer">
+            <a href="https://www.facebook.com/vphat14/" target="_blank" rel="noreferrer">
 
               <FaQuestionCircle />
 
@@ -185,19 +185,19 @@ const NavDrawerContent = ({ toggleSideNav }) => {
         </ul>
       </div>
       <div className={styles.socials_container}>
-        <a href="https://www.instagram.com/mih_ngocc/" target="_blank" rel="noreferrer">
+        <a href="https://www.instagram.com/vphat_14" target="_blank" rel="noreferrer">
           <FaInstagram />
         </a>
-        <a href="https://tiktok.com" target="_blank" rel="noreferrer">
+        <a href="https://www.tiktok.com/@vphat14" target="_blank" rel="noreferrer">
           <FaTiktok />
         </a>
-        <a href="https://twitter.com" target="_blank" rel="noreferrer">
+        <a href="https://www.facebook.com/vphat14/" target="_blank" rel="noreferrer">
           <FaTwitterSquare />
         </a>
-        <a href="https://www.facebook.com/ngoc.vuong0126" target="_blank" rel="noreferrer">
+        <a href="https://www.facebook.com/vphat14/" target="_blank" rel="noreferrer">
           <FaFacebookF />
         </a>
-        <a href="https://youtube.com" target="_blank" rel="noreferrer">
+        <a href="https://www.facebook.com/vphat14/" target="_blank" rel="noreferrer">
           <FaYoutube />
         </a>
       </div>
@@ -206,3 +206,4 @@ const NavDrawerContent = ({ toggleSideNav }) => {
 };
 
 export default NavDrawerContent;
+

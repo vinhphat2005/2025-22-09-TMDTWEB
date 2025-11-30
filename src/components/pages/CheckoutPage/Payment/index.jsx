@@ -15,6 +15,7 @@ import AddressForm from '../AddressForm';
 import { Button, Loader } from 'components/common';
 import PayPalButton from 'components/common/PayPalButton';
 import { formatCardNumber, formatExpiryDate, formatCvv } from 'helpers/format';
+
 import styles from './index.module.scss';
 
 const Payment = () => {
@@ -327,7 +328,7 @@ const Payment = () => {
                       </p>
                     </div>
                   )}
-                  
+
                   <div>
                     <label className={styles.payment_option}>
                       <input

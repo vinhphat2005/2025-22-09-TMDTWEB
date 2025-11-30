@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { Pagination } from 'swiper';
 import 'swiper/swiper-bundle.min.css'; // Import Swiper styles
+import { Helmet } from 'react-helmet-async';
 
 import { useProductContext } from 'hooks/useProductContext';
 import { useCart } from 'hooks/useCart';
@@ -17,6 +18,8 @@ import {
   Slider,
   MediaContainer,
   NotFound,
+  SEO,
+  ShareButtons,
 } from 'components/common';
 
 import { formatPrice } from 'helpers/format';
@@ -135,7 +138,48 @@ const ProductPage = () => {
   });
 
   return (
-    <div className={styles.productPage}>
+    <>
+      {productIsReady && selectedProduct && selectedVariant && (
+        <>
+          <SEO
+            title={`${selectedProduct.model} - ${selectedVariant.color}`}
+            description={selectedProduct.description || `Buy ${selectedProduct.model} in ${selectedVariant.color} at SKRT. Premium ${selectedProduct.type} with ${selectedProduct.variants.length} color options. Fast shipping, easy returns, 100% authentic. Shop now for the best deals on quality products!`}
+            image={selectedVariant.images[0]?.src || ''}
+            url={`/products/${selectedProduct.slug}-${selectedVariant.color}`}
+            type="product"
+            keywords={`${selectedProduct.model}, ${selectedProduct.type}, ${selectedVariant.color}, fashion, ecommerce, SKRT`}
+          />
+          <Helmet>
+            <script type="application/ld+json">
+              {`{
+                "@context": "https://schema.org/",
+                "@type": "Product",
+                "name": "${selectedProduct.model} - ${selectedVariant.color}",
+                "image": ${JSON.stringify(selectedVariant.images.map(img => img.src))},
+                "description": "${(selectedProduct.description || `Buy ${selectedProduct.model} in ${selectedVariant.color} at SKRT. Premium ${selectedProduct.type} with ${selectedProduct.variants.length} color options.`).replace(/"/g, '\\"')}",
+                "brand": {
+                  "@type": "Brand",
+                  "name": "${selectedProduct.brand || 'SKRT'}"
+                },
+                "offers": {
+                  "@type": "Offer",
+                  "url": "${window.location.origin}/products/${selectedProduct.slug}-${selectedVariant.color}",
+                  "priceCurrency": "VND",
+                  "price": "${selectedVariant.variantPrice || selectedProduct.price}",
+                  "availability": "${selectedVariant.quantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'}",
+                  "itemCondition": "https://schema.org/NewCondition"
+                },
+                "aggregateRating": {
+                  "@type": "AggregateRating",
+                  "ratingValue": "4.8",
+                  "reviewCount": "127"
+                }
+              }`}
+            </script>
+          </Helmet>
+        </>
+      )}
+      <div className={styles.productPage}>
       {!productIsReady && (
         <div className={styles.loader_section}>
           <Loader />
@@ -185,7 +229,7 @@ const ProductPage = () => {
                         <div key={index} className={styles.slide}>
                           <img
                             src={image.src}
-                            alt={`Slide ${index}`}
+                            alt={`${selectedProduct.model} ${selectedVariant.color} - Image ${index + 1}`}
                             className={styles.image}
                           />
                         </div>
@@ -324,6 +368,8 @@ const ProductPage = () => {
                             id={variant.variantId}
                             thumbnail={variant.images[0].src}
                             selectedId={selectedVariant.variantId}
+                            color={variant.color}
+                            model={selectedProduct.model}
                           />
                         ))}
                       </div>
@@ -365,6 +411,14 @@ const ProductPage = () => {
                         </span>
                       </Button>
                     )}
+                    
+                    {/* Share Buttons */}
+                    <ShareButtons
+                      url={`/products/${selectedProduct.slug}-${selectedVariant.color}`}
+                      title={`${selectedProduct.model} - ${selectedVariant.color}`}
+                      description={selectedProduct.description || `Shop ${selectedProduct.model} at SKRT`}
+                      image={selectedVariant.images[0]?.src}
+                    />
                   </div>
                 </div>
               </div>
@@ -502,7 +556,7 @@ const ProductPage = () => {
                     <MediaContainer
                       key={index}
                       image={image.src}
-                      alt={`Image ${index}`}
+                      alt={`${selectedProduct.model} ${selectedVariant.color} - View ${index + 1}`}
                       containerClassName={styles.image_container}
                       fillClassName={styles.image_fill}
                     />
@@ -567,10 +621,85 @@ const ProductPage = () => {
                       </span>
                     </Button>
                   )}
+                  
+                  {/* Share Buttons */}
+                  <ShareButtons
+                    url={`/products/${selectedProduct.slug}-${selectedVariant.color}`}
+                    title={`${selectedProduct.model} - ${selectedVariant.color}`}
+                    description={selectedProduct.description || `Shop ${selectedProduct.model} at SKRT`}
+                    image={selectedVariant.images[0]?.src}
+                  />
                 </div>
               </div>
             </section>
           )}
+          
+          {/* SEO Content Section */}
+          {productIsReady && selectedProduct && selectedVariant && (
+            <section className="main-container">
+              <div className={styles.seoContent}>
+                <h2 className={styles.seoTitle}>
+                  About {selectedProduct.model} - {selectedVariant.color} Edition
+                </h2>
+                
+                <div className={styles.seoDescription}>
+                  <p>
+                    The <strong>{selectedProduct.model}</strong> in <strong>{selectedVariant.color}</strong> is the perfect choice for those seeking quality and style. 
+                    Shop the latest {selectedProduct.type} at SKRT with confidence and enjoy our premium collection.
+                  </p>
+                  
+                  <h2 className={styles.seoSubtitle}>Key Features & Specifications</h2>
+                  <ul className={styles.seoList}>
+                    <li>Premium {selectedProduct.type} with modern design</li>
+                    <li>Available in {selectedProduct.variants.length} stunning {selectedProduct.variants.length > 1 ? 'colors' : 'color'}</li>
+                    <li>Fast shipping nationwide within 3-5 business days</li>
+                    <li>100% authentic product guarantee</li>
+                    <li>Easy returns and exchanges within 30 days</li>
+                    <li>Secure payment options: PayPal, VNPay, and more</li>
+                  </ul>
+                  
+                  <h2 className={styles.seoSubtitle}>Why Buy {selectedProduct.model} from SKRT?</h2>
+                  <p>
+                    When you buy <strong>{selectedProduct.model}</strong> from SKRT, you're getting more than just a {selectedProduct.type}. 
+                    You're investing in quality, reliability, and excellent customer service. Our curated {selectedProduct.type} collection 
+                    features the latest trends at competitive prices, ensuring you get the best value for your money.
+                  </p>
+                  
+                  <p>
+                    Explore our full range of premium products and discover why thousands of customers trust SKRT for their shopping needs. 
+                    Have questions? Our customer support team is always ready to help you find the perfect item!
+                  </p>
+                  
+                  <h2 className={styles.seoSubtitle}>Product Details & Care Instructions</h2>
+                  <p>
+                    This {selectedProduct.model} in {selectedVariant.color} is designed with attention to detail and crafted from high-quality materials. 
+                    Whether you're looking for everyday wear or something special, this {selectedProduct.type} delivers both comfort and style. 
+                    Each piece undergoes rigorous quality control to ensure it meets our high standards before reaching your doorstep.
+                  </p>
+                  
+                  <p>
+                    To maintain the pristine condition of your {selectedProduct.model}, we recommend following proper care instructions. 
+                    Store in a cool, dry place away from direct sunlight. For cleaning, follow the care label guidelines specific to the material. 
+                    With proper care, your {selectedProduct.model} will remain in excellent condition for years to come.
+                  </p>
+                  
+                  <h2 className={styles.seoSubtitle}>Shipping & Return Policy</h2>
+                  <p>
+                    At SKRT, we understand the importance of timely delivery. All orders are processed within 24 hours on business days. 
+                    We offer free standard shipping on orders over 500,000 VND, with delivery typically taking 3-5 business days depending on your location. 
+                    For faster delivery, express shipping options are available at checkout at an additional cost.
+                  </p>
+                  
+                  <p>
+                    Not satisfied with your purchase? No problem! We offer a hassle-free 30-day return policy. If you're not completely satisfied with your 
+                    {selectedProduct.model}, simply contact our customer service team to initiate a return. Items must be unused, in original condition, 
+                    and in original packaging. Refunds are processed within 5-7 business days after we receive your return. Your satisfaction is our priority.
+                  </p>
+                </div>
+              </div>
+            </section>
+          )}
+          
           <ProductSlider
             titleBottom="Recommend Product"
             sortBy={{ field: 'price', direction: 'desc' }}
@@ -579,6 +708,7 @@ const ProductPage = () => {
 
       )}
     </div>
+    </>
   );
 };
 

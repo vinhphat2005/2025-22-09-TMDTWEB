@@ -67,7 +67,7 @@ const Navbar = ({ toggleSideNav, openCartModal }) => {
         </Button>
         <ul className={styles.info_list}>
           <li>
-            <a href="https://www.facebook.com/ngoc.vuong0126" className={styles.link} target="_blank" rel="noreferrer">
+            <a href="https://www.facebook.com/vphat14/" className={styles.link} target="_blank" rel="noreferrer">
 
               Help Center
             </a>
@@ -91,7 +91,7 @@ const Navbar = ({ toggleSideNav, openCartModal }) => {
             </Link>
           </li>
           <li>
-            <a href="mailto: ngocvuong443@gmail.com" className={styles.link} target="_blank" rel="noreferrer">
+            <a href="mailto: tvp14042005@gmail.com" className={styles.link} target="_blank" rel="noreferrer">
 
               Returns & Exchanges
             </a>
@@ -166,3 +166,4 @@ const Navbar = ({ toggleSideNav, openCartModal }) => {
 };
 
 export default Navbar;
+

@@ -1,0 +1,120 @@
+@import '../../../variables.scss';
+
+.shareButtons {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  .shareTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: $c-secondary;
+  }
+
+  .buttonsWrapper {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .shareBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    
+    svg {
+      font-size: 1.125rem;
+    }
+
+    span {
+      font-family: inherit;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &.facebook {
+      background: linear-gradient(135deg, #1877f2 0%, #0d65d9 100%);
+      
+      &:hover {
+        background: linear-gradient(135deg, #0d65d9 0%, #084bb8 100%);
+      }
+    }
+
+    &.twitter {
+      background: linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%);
+      
+      &:hover {
+        background: linear-gradient(135deg, #0d8bd9 0%, #0a73b8 100%);
+      }
+    }
+
+    &.linkedin {
+      background: linear-gradient(135deg, #0077b5 0%, #005c8f 100%);
+      
+      &:hover {
+        background: linear-gradient(135deg, #005c8f 0%, #004570 100%);
+      }
+    }
+
+    &.copyLink {
+      background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+      
+      &:hover {
+        background: linear-gradient(135deg, #545b62 0%, #3d4349 100%);
+      }
+
+      &.copied {
+        background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+        
+        &:hover {
+          background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .shareButtons {
+    padding: 1rem;
+
+    .shareTitle {
+      font-size: 0.875rem;
+    }
+
+    .buttonsWrapper {
+      gap: 0.5rem;
+    }
+
+    .shareBtn {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.813rem;
+
+      svg {
+        font-size: 1rem;
+      }
+
+      span {
+        display: none;
+      }
+    }
+  }
+}

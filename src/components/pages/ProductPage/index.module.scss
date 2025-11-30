@@ -836,3 +836,89 @@ div {
 
   // Thêm các phần tử p khác ở đây và áp dụng lớp "bulleted-paragraph"
 }
+
+// SEO Content Section Styles
+.seoContent {
+  max-width: 1200px;
+  margin: 4rem auto;
+  padding: 3rem 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  .seoTitle {
+    font-family: $font-f-hero;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: $ls-primary;
+    margin-bottom: 1.5rem;
+    color: #000000;
+    
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  .seoDescription {
+    font-family: $font-f-secondary;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #000000;
+
+    p {
+      margin-bottom: 1.5rem;
+      
+      strong {
+        font-weight: 700;
+        color: $c-detail;
+      }
+    }
+
+    .seoSubtitle {
+      font-family: $font-f-primary;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: $ls-secondary;
+      margin: 2rem 0 1rem;
+      color: #000000;
+      
+      @media (max-width: 768px) {
+        font-size: 1.25rem;
+      }
+    }
+
+    .seoList {
+      margin: 1.5rem 0;
+      padding-left: 2rem;
+      
+      li {
+        margin-bottom: 0.75rem;
+        position: relative;
+        
+        &::before {
+          content: "✓";
+          position: absolute;
+          left: -1.5rem;
+          color: $c-detail;
+          font-weight: bold;
+        }
+      }
+    }
+
+    .seoLink {
+      color: $c-detail;
+      text-decoration: underline;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        color: $c-link-hover;
+        text-decoration: none;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 2rem 1.5rem;
+    margin: 2rem auto;
+  }
+}

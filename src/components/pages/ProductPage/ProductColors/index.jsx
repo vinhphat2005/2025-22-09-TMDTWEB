@@ -4,7 +4,7 @@ import { MediaContainer } from 'components/common';
 
 import styles from './index.module.scss';
 
-const ProductColors = ({ id, thumbnail, selectedId }) => {
+const ProductColors = ({ id, thumbnail, selectedId, color, model }) => {
   const { selectVariant } = useProduct();
 
   let shouldAddEventHandler = false;
@@ -25,7 +25,7 @@ const ProductColors = ({ id, thumbnail, selectedId }) => {
   return (
     <MediaContainer
       image={thumbnail}
-      alt=""
+      alt={`${model || 'Product'} - ${color || 'Color variant'} thumbnail`}
       onClick={shouldAddEventHandler ? handleSelectVariant : undefined}
       containerClassName={styles.image_container}
       fillClassName={styles.image_fill}

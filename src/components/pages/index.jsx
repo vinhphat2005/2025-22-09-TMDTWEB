@@ -11,3 +11,5 @@ export { default as HomePage } from './HomePage';
 export { default as LoginPage } from './LoginPage';
 export { default as ProductPage } from './ProductPage';
 export { default as SignUpPage } from './SignUpPage';
+export { default as VNPaySuccess } from './VNPaySuccess';
+export { default as VNPayMockPayment } from './VNPayMockPayment';

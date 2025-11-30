@@ -35,7 +35,7 @@ const Footer = () => {
             <h4 className={styles.nav_title}>Help</h4>
             <ul className={styles.nav}>
               <li>
-                <a href="https://www.facebook.com/ngoc.vuong0126" className={styles.link} target="_blank" rel="noreferrer">
+                <a href="https://www.facebook.com/vphat14/" className={styles.link} target="_blank" rel="noreferrer">
 
                   Help Center
                 </a>
@@ -57,7 +57,7 @@ const Footer = () => {
                 <Link to="/account">Track My Order</Link>
               </li>
               <li>
-                <a href="mailto: ngocvuong443@gmail.com" className={styles.link} target="_blank" rel="noreferrer">
+                <a href="mailto: tvp14042005@gmail.com" className={styles.link} target="_blank" rel="noreferrer">
 
                   Returns & Exchanges
                 </a>
@@ -71,7 +71,7 @@ const Footer = () => {
                 <Link to="">About Us</Link>
               </li>
               <li>
-                <Link to="">Carreers</Link>
+                <Link to="">Careers</Link>
               </li>
             </ul>
           </div>
@@ -80,22 +80,22 @@ const Footer = () => {
           {isBigScreen && <Newsletter />}
           <div className={styles.socials}>
             <a
-              href="https://www.instagram.com/mih_ngocc/"
+              href="https://www.instagram.com/vphat_14"
               target="_blank"
               rel="noreferrer"
             >
               <FaInstagram />
             </a>
-            <a href="https://tiktok.com" target="_blank" rel="noreferrer">
+            <a href="https://www.tiktok.com/@vphat14" target="_blank" rel="noreferrer">
               <FaTiktok />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer">
+            <a href="https://www.facebook.com/vphat14/" target="_blank" rel="noreferrer">
               <FaTwitterSquare />
             </a>
-            <a href="https://www.facebook.com/ngoc.vuong0126" target="_blank" rel="noreferrer">
+            <a href="https://www.facebook.com/vphat14/" target="_blank" rel="noreferrer">
               <FaFacebookF />
             </a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer">
+            <a href="https://www.facebook.com/vphat14/" target="_blank" rel="noreferrer">
               <FaYoutube />
             </a>
           </div>
@@ -106,3 +106,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
